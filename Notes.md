@@ -64,12 +64,12 @@
     ```
     - Extending a type with intersections:
     ```ts
-    type Animal {
+    type Animal = {
       name: string;
-    }
+    };
     type Bear = Animal & {
-      honey: boolean
-    }
+      honey: boolean;
+    };
     ```
     - New fields can be added to an existing interface:
     ```ts
@@ -102,3 +102,26 @@ let alignment: "left" | "right" | "center";
   > "Argument of type 'string' is not assignable to parameter of type '"GET" | "POST"'."
 
 - `Non-null assertion`. It's important to make sure a value isn't null. We can do this with null checking, like `if (x !== null)`, or otherwise use the postfix !: `x.value!.bla()`
+
+- `Type Guards` provide _narrowing_. We can use `typeof`.
+
+  - It's best with `null` to do an explicit check: `if (strs !== null)`
+  - `!=` can be used to check for `null` OR `undefined`, whereas `!== null` is only for `null`
+  - `"value" in x` can be used to check if the string literal `"value"` is a property of the union type `x`. Like check if a type has a method.
+  - `Type predicates` are user defined type guards: `pet is Fish` is defined as a function return type, then can later be used as a type guard:
+
+  ```ts
+  function isFish(pet: Fish | Bird): pet is Fish {
+    return (pet as Fish).swim !== undefined;
+  }
+
+  if (isFish(pet)) {
+    pet.swim();
+  } else {
+    pet.fly();
+  }
+  ```
+
+```
+
+```
