@@ -122,6 +122,107 @@ let alignment: "left" | "right" | "center";
   }
   ```
 
+## More on functions
+
+### Generic functions
+
+- We can use generics, or type variables, to link the input type to the output type:
+
+```ts
+function firstElement<Type>(arr: Type[]): Type | undefined {
+  return arr[0];
+}
 ```
 
+- You can also use multiple type parameters, just have to define them in the call signature using the `<>` syntax.
+
+#### Constraining generic types
+
+- To limit the kinds of types a type parameter can accept, we use `extends`:
+
+```ts
+function longest<Type extends { length: number }>(a: Type, b: Type) {
+  if (a.length >= b.length) {
+    return a;
+  } else {
+    return b;
+  }
+}
+```
+
+- I guess we are basically saying that the `Type` needs to have a property of `length` of type `number`.
+
+## Object Types
+
+### Optional properties
+
+- If a property is optional, indicated by a `?` behind its name, then we need to be sure to handle the case that it's undefined. We can either check for the `undefined` case: `let xPos = opts.xPos === undefined ? 0 : opts.xPos;` or use a destructuring pattern to set default values:
+
+```ts
+function paintShape({ shape, xPos = 0, yPos = 0 }: PaintOptions);
+```
+
+### Readonly properties
+
+- Can be specified by marking a property with `readonly`.
+- Readonly properties cannot be written to during type checking.
+
+### Index signatures
+
+- When you don't know the names of the properties, but you do know their shape.
+
+```ts
+interface StringArray {
+  [index: number]: string;
+}
+```
+
+### Extending Types
+
+- It's common to have types that are a more specific version of other types. Use the `extends` keyword to add properties:
+  `interface ChildType extends ParentType {}`
+
+```ts
+interface BasicAddress {
+  name?: string;
+  street: string;
+  city: string;
+  country: string;
+  postalCode: string;
+}
+
+interface AddressWithUnit extends BasicAddress {
+  unit: string;
+}
+```
+
+- This enables us to copy members from one type and then add new members. We can also extend from multiple types: `interface Child extends Parent1, Parent2 {}`
+
+### Intersecting Types
+
+- We can use `&` to intersect two types. We produce a new type that has _all_ members of both types. This is used for type alias,es whereas `extends` is used for `interfaces`
+
+```ts
+interface Colorful {
+  color: string;
+}
+interface Circle {
+  radius: number;
+}
+
+type ColorfulCircle = Colorful & Circle;
+```
+
+### Using generics with interfaces
+
+- We can easily use a generic type variable to define an interface or a type alias with a variable type:
+
+```ts
+interface Box<Type> {
+  contents: Type;
+}
+type Box<Type> = {
+  contents: Type;
+};
+let appleBox: Box<Apple> = { contents: "red delicious" };
 ```
